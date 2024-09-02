@@ -1,6 +1,6 @@
 <a id="readme-top"></a>
 
-[![LinkedIn][linkedin-shield]][linkedin-url]
+[![LinkedIn][linkedin-shield]][linkedin-url] - www.linkedin.com/in/pabloguerrero1611
 
 <!-- PROJECT LOGO -->
 <br />
@@ -170,7 +170,7 @@ In this section I'll describe the main features of my project from an Admin Poin
 <!-- CONTACT -->
 ## Contact
 
-Pablo Guerrero - [LinkedIn](www.linkedin.com/in/pabloguerrero1611) - guerreropablo313@gmail.com
+Pablo Guerrero - [www.linkedin.com/in/pabloguerrero1611] - guerreropablo313@gmail.com
 
 Project Link: [BookStore .Net Core 8](https://github.com/pabloguerrero16/ASP-Net-Core-BookStore)
 
