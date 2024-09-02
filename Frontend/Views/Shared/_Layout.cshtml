@@ -1,0 +1,192 @@
+﻿@using Newtonsoft.Json
+@using System.Text
+@{
+    var userBytes = ViewContext.HttpContext.Session.Get("User");
+    Usuario user = null;
+    if (userBytes != null)
+    {
+        var userJson = Encoding.UTF8.GetString(userBytes);
+        user = JsonConvert.DeserializeObject<Usuario>(userJson);
+    }
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Libreria Antigua</title>
+
+    <!-- Favicon -->
+    <link rel="apple-touch-icon" href="assets/img/apple-icon.png">
+    <link rel="shortcut icon" type="image/x-icon" href="assets/img/favicon.ico">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="~/css/templatemo.css">
+    <link rel="stylesheet" href="~/css/custom.css">
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="~/css/fontawesome.min.css">
+
+    <!-- Google Fonts -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;200;300;400;500;700;900&display=swap">
+</head>
+<body>
+    @* HEADER *@
+    <nav class="navbar navbar-expand-lg navbar-light shadow">
+        <div class="container d-flex justify-content-between align-items-center">
+            <a class="navbar-brand text-success logo h1 align-self-center" href="/Home/Index">
+                Librería Antigua
+            </a>
+
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#templatemo_main_nav" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="align-self-center collapse navbar-collapse flex-fill d-lg-flex justify-content-lg-between" id="templatemo_main_nav">
+                <div class="flex-fill">
+                    <ul class="nav navbar-nav d-flex justify-content-between mx-lg-auto">
+                        @if (user != null && user.RolId == 1)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-action="Index" asp-controller="Admin">Panel Administrador</a>
+                            </li>
+                        }
+
+                    </ul>
+                </div>
+                <div class="navbar align-self-center d-flex">
+
+                    @if (user != null)
+                    {
+                        <a class="nav-icon position-relative d-flex align-items-center text-decoration-none me-3" asp-action="Carrito" asp-controller="Carrito">
+                            <i class="fa fa-fw fa-cart-arrow-down text-dark"></i>
+                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-light text-dark"></span>
+                        </a>
+
+                        <div class="dropdown">
+                            <a class="position-relative d-flex align-items-center text-decoration-none me-3 dropdown-toggle" href="#" role="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fa fa-fw fa-user text-dark"></i>
+                                <span class="ms-2">@user.Nombre</span>
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="userDropdown">
+                                <li><a class="dropdown-item" href="@Url.Action("MisCompras", "Usuario")">Mis compras</a></li>
+                                <li><a class="dropdown-item" asp-action="EditarPerfil" asp-controller="Usuario">Editar Perfil</a></li>
+                            </ul>
+                        </div>
+
+
+                        <a class="position-relative d-flex align-items-center text-decoration-none" href="/Usuario/logout">
+                            <i class="fa fa-fw fa-sign-out text-dark me-2"></i>
+                            <span class="ms-2">Cerrar Sesión</span>
+                        </a>
+                    }
+                    else
+                    {
+                        <a class="position-relative text-decoration-none me-3" href="/Usuario/login">
+                            <i class="fa fa-fw fa-sign-in text-dark me-2"></i>
+                            <span>Ingresar</span>
+                        </a>
+
+                        <a class="position-relative text-decoration-none" href="/Usuario/registrarUsuario">
+                            <span>Registrarse</span>
+                        </a>
+                    }
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    @* MAIN BODY *@
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    @* FOOTER *@
+    <footer class="bg-dark" id="tempaltemo_footer">
+        <div class="container">
+            <div class="row">
+
+                <div class="col-md-4 pt-5">
+                    <h2 class="h2 text-success border-bottom pb-3 border-light logo">Libreria Antigua</h2>
+                    <ul class="list-unstyled text-light footer-link-list">
+                        <li>
+                            <i class="fas fa-map-marker-alt fa-fw"></i>
+                            Cartago, Central Cartago
+                        </li>
+                        <li>
+                            <i class="fa fa-phone fa-fw"></i>
+                            <a class="text-decoration-none" href="tel:010-020-0340">2424-6758</a>
+                        </li>
+                        <li>
+                            <i class="fa fa-envelope fa-fw"></i>
+                            <a class="text-decoration-none" href="mailto:info@company.com">antigua@libreria.com</a>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="col-md-4 pt-5">
+                    <h2 class="h2 text-light border-bottom pb-3 border-light">Productos</h2>
+                    <ul class="list-unstyled text-light footer-link-list">
+                        <li><a class="text-decoration-none" asp-action="Index" asp-controller="Home">Todos</a></li>
+                    </ul>
+                </div>
+
+            </div>
+
+            <div class="row text-light mb-4">
+                <div class="col-12 mb-3">
+                    <div class="w-100 my-3 border-top border-light"></div>
+                </div>
+                <div class="col-auto me-auto">
+                    <ul class="list-inline text-left footer-icons">
+                        <li class="list-inline-item border border-light rounded-circle text-center">
+                            <a class="text-light text-decoration-none" target="_blank" href="#"><i class="fab fa-facebook-f fa-lg fa-fw"></i></a>
+                        </li>
+                        <li class="list-inline-item border border-light rounded-circle text-center">
+                            <a class="text-light text-decoration-none" target="_blank" href="#"><i class="fab fa-instagram fa-lg fa-fw"></i></a>
+                        </li>
+                        <li class="list-inline-item border border-light rounded-circle text-center">
+                            <a class="text-light text-decoration-none" target="_blank" href="#"><i class="fab fa-twitter fa-lg fa-fw"></i></a>
+                        </li>
+                        <li class="list-inline-item border border-light rounded-circle text-center">
+                            <a class="text-light text-decoration-none" target="_blank" href="#"><i class="fab fa-linkedin fa-lg fa-fw"></i></a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="w-100 bg-black pt-3">
+            <div class="container">
+                <div class="row pt-2">
+                    <div class="col-12">
+                        <p class="text-left text-light">
+                            Copyright &copy; 2021 Company Name
+                            | Designed by <a rel="sponsored" href="https://templatemo.com" target="_blank">TemplateMo</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <!-- jQuery -->
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-loading-overlay/2.1.7/loadingoverlay.min.js"></script>
+
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Custom Scripts -->
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/js/templatemo.js"></script>
+    <script src="~/js/custom.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

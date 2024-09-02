@@ -1,0 +1,112 @@
+﻿@model List<Frontend.Models.Autor>
+
+<div class="container py-5">
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#agregarAutorModal">
+        Agregar Autor
+    </button>
+    <div class="row py-5">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Cantidad de Libros</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var autor in Model)
+                {
+                    <tr>
+                        <td>@autor.Nombre</td>
+                        <td>@autor.CantidadLibros</td>
+                        <td>
+                            <div class="d-flex">
+                                <button type="button" class="btn btn-primary btn-sm me-1" onclick="loadEditModal(@autor.Id)">Editar</button>
+                                <form asp-action="EliminarAutor" asp-route-id="@autor.Id" method="post" style="display:inline;" data-book-id="@autor.Id" data-book-name="@autor.Nombre">
+                                    <input type="hidden" name="_method" value="DELETE" />
+                                    <button type="button" class="btn btn-danger btn-sm" onclick="confirmDelete(this)">Eliminar</button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <div class="mt-3">
+            <a href="@Url.Action("Index", "Admin")" class="btn btn-secondary btn-lg">Volver</a>
+        </div>
+    </div>
+</div>
+
+<!-- Include the partial view -->
+@Html.Partial("_EditAutorPartial", new Frontend.Models.Autor())
+@Html.Partial("_AgregarAutorPartial", new Frontend.Models.Autor())
+@Html.Partial("_ConfirmDeletePartial")
+@Html.Partial("_ErrorDeleteAutor")
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        function loadEditModal(id) {
+            $.ajax({
+                url: `https://localhost:7281/api/Autors/${id}`,
+                type: 'GET',
+                success: function (data) {
+                    $('#editAuthorId').val(data.id);
+                    $('#editAuthorName').val(data.nombre);
+                    $('#editAuthorModal').modal('show');
+                },
+                error: function () {
+                    alert('Error al cargar los datos del autor.');
+                }
+            });
+        }
+
+        $('#editAuthorForm').submit(function (event) {
+            event.preventDefault();
+            var id = $('#editAuthorId').val();
+            var authorName = $('#editAuthorName').val();
+
+            $.ajax({
+                url: `https://localhost:7281/api/Autors/${id}`,
+                type: 'PUT',
+                contentType: 'application/json',
+                data: JSON.stringify({ Id: id, Nombre: authorName }),
+                success: function () {
+                    $('#editAuthorModal').modal('hide');
+                    location.reload();
+                },
+                error: function () {
+                    alert('Error al actualizar el autor.');
+                }
+            });
+        });
+    </script>
+    <script>
+        var formToSubmit;
+
+        function confirmDelete(button) {
+            var form = button.closest('form');
+            var itemName = form.getAttribute('data-book-name');
+            var cantidadLibros = parseInt(button.closest("tr").querySelector("td:nth-child(2)").innerText);
+
+            if (cantidadLibros > 0) {
+                $('#errorDeleteAutorModal').modal('show');
+            } else {
+                formToSubmit = form;
+
+                document.getElementById('confirmDeleteMessage').innerText = '¿Estás seguro de eliminar al autor ' + itemName + '?';
+                $('#confirmDeleteModal').modal('show');
+            }
+        }
+
+        document.getElementById('confirmDeleteButton').addEventListener('click', function () {
+            if (formToSubmit) {
+                formToSubmit.submit();
+            }
+        });
+
+    </script>
+
+}

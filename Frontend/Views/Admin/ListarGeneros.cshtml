@@ -1,0 +1,112 @@
+﻿@model List<Frontend.Models.Genero>
+
+<div class="container py-5">
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#agregarGeneroModal">
+        Agregar Genero
+    </button>
+    <div class="row py-5">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Cantidad de Libros</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var genero in Model)
+                {
+                    <tr>
+                        <td>@genero.Nombre</td>
+                        <td>@genero.CantidadLibros</td>
+                        <td>
+                            <div class="d-flex">
+                                <button type="button" class="btn btn-primary btn-sm me-1" onclick="loadEditModal(@genero.Id)">Editar</button>
+                                <form asp-action="EliminarGenero" asp-route-id="@genero.Id" method="post" style="display:inline;" data-book-id="@genero.Id" data-book-name="@genero.Nombre">
+                                    <input type="hidden" name="_method" value="DELETE" />
+                                    <button type="button" class="btn btn-danger btn-sm" onclick="confirmDelete(this)">Eliminar</button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <div class="mt-3">
+            <a href="@Url.Action("Index", "Admin")" class="btn btn-secondary btn-lg">Volver</a>
+        </div>
+    </div>
+</div>
+
+<!-- Include the partial view -->
+@Html.Partial("_EditGeneroPartial", new Frontend.Models.Genero())
+@Html.Partial("_AgregarGeneroPartial", new Frontend.Models.Genero())
+@Html.Partial("_ConfirmDeletePartial")
+@Html.Partial("_ErrorDeleteGenero")
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        function loadEditModal(id) {
+            $.ajax({
+                url: `https://localhost:7281/api/Generoes/${id}`,
+                type: 'GET',
+                success: function (data) {
+                    $('#editGeneroId').val(data.id);
+                    $('#editGeneroName').val(data.nombre);
+                    $('#editGeneroModal').modal('show');
+                },
+                error: function () {
+                    alert('Error al cargar los datos del genero.');
+                }
+            });
+        }
+
+        $('#editGeneroForm').submit(function (event) {
+            event.preventDefault();
+            var id = $('#editGeneroId').val();
+            var generoName = $('#editGeneroName').val();
+
+            $.ajax({
+                url: `https://localhost:7281/api/Generoes/${id}`,
+                type: 'PUT',
+                contentType: 'application/json',
+                data: JSON.stringify({ Id: id, Nombre: generoName }),
+                success: function () {
+                    $('#editGeneroModal').modal('hide');
+                    location.reload();
+                },
+                error: function () {
+                    alert('Error al actualizar el Genero.');
+                }
+            });
+        });
+    </script>
+    <script>
+        var formToSubmit;
+
+        function confirmDelete(button) {
+            var form = button.closest('form');
+            var itemName = form.getAttribute('data-book-name');
+            var cantidadLibros = parseInt(button.closest("tr").querySelector("td:nth-child(2)").innerText);
+
+            if (cantidadLibros > 0) {
+                $('#errorDeleteGeneroModal').modal('show');
+            } else {
+                formToSubmit = form;
+
+                document.getElementById('confirmDeleteMessage').innerText = '¿Estás seguro de eliminar el genero ' + itemName + '?';
+                $('#confirmDeleteModal').modal('show');
+            }
+        }
+
+        document.getElementById('confirmDeleteButton').addEventListener('click', function () {
+            if (formToSubmit) {
+                formToSubmit.submit();
+            }
+        });
+
+    </script>
+
+}

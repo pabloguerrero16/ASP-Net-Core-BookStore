@@ -1,0 +1,74 @@
+﻿@model Frontend.Models.Libro
+
+@{
+    ViewBag.Title = "Agregar Libro";
+    var autores = ViewBag.Autores as List<Autor>;
+    var generos = ViewBag.Generos as List<Genero>;
+    var formatos = ViewBag.Formatos as List<Formato>;
+}
+
+<div class="container py-5">
+    <div class="row py-5">
+        <form class="col-md-9 m-auto" method="post" enctype="multipart/form-data">
+            <div class="row">
+                <div class="form-group col-md-6 mb-3">
+                    <label for="nombre">Nombre</label>
+                    <input type="text" class="form-control mt-1" id="nombre" name="Nombre" placeholder="Nombre" required>
+                </div>
+                <div class="form-group col-md-6 mb-3">
+                    <label for="stock">Stock</label>
+                    <input type="number" class="form-control mt-1" id="stock" name="Stock" placeholder="Stock" required>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group col-md-6 mb-3">
+                    <label for="autor">Autor</label>
+                    <select class="form-control mt-1" id="autor" name="AutorId" required>
+                        <option value="">Seleccione un Autor</option>
+                        @foreach (var autor in autores)
+                        {
+                            <option value="@autor.Id">@autor.Nombre</option>
+                        }
+                    </select>
+                </div>
+                <div class="form-group col-md-6 mb-3">
+                    <label for="genero">Género</label>
+                    <select class="form-control mt-1" id="genero" name="GeneroId" required>
+                        <option value="">Seleccione un Género</option>
+                        @foreach (var genero in generos)
+                        {
+                            <option value="@genero.Id">@genero.Nombre</option>
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="mb-3">
+                <label for="formato">Formato</label>
+                <select class="form-control mt-1" id="formato" name="FormatoId" required>
+                    <option value="">Seleccione un Formato</option>
+                    @foreach (var formato in formatos)
+                    {
+                        <option value="@formato.Id">@formato.Nombre</option>
+                    }
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="precio">Precio</label>
+                <input type="number" class="form-control mt-1" id="precio" name="Precio" placeholder="Precio" required>
+            </div>
+            <div class="mb-3">
+                <label for="descripcion">Descripción</label>
+                <textarea class="form-control mt-1" id="descripcion" name="Descripcion" placeholder="Descripción" rows="8" required></textarea>
+            </div>
+            <div class="mb-3">
+                <label for="imagen">Imagen del Producto</label>
+                <input type="file" class="form-control mt-1" id="imagen" name="Imagen" accept="image/*" required>
+            </div>
+            <div class="row">
+                <div class="col text-end mt-2">
+                    <button type="submit" class="btn btn-success btn-lg px-3">Agregar Libro</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

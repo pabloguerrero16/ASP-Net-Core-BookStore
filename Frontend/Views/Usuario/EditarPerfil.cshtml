@@ -1,0 +1,78 @@
+﻿@model Usuario
+
+@{
+    ViewData["Title"] = "EditarPerfil";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container">
+    <div class="row mt-5">
+        <div class="col-lg-4 bg-white m-auto">
+            <h2 class="text-center pt-3">Editar Perfil</h2>
+            <!-- Formulario para actualizar perfil -->
+            <form asp-action="ActualizarPerfil" method="post">
+                <div class="mb-3">
+                    <label for="nombre">Nombre</label>
+                    <span asp-validation-for="Nombre" class="text-danger"></span>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fa fa-user"></i></span>
+                        <input asp-for="Nombre" class="form-control" placeholder="Nombre" value="@Model.Nombre" />
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label for="apellido">Apellido</label>
+                    <span asp-validation-for="Apellido" class="text-danger"></span>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fa fa-user"></i></span>
+                        <input asp-for="Apellido" class="form-control" placeholder="Apellido" value="@Model.Apellido" />
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label for="correo">Correo</label>
+                    <span asp-validation-for="Correo" class="text-danger"></span>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fa fa-envelope"></i></span>
+                        <input asp-for="Correo" class="form-control" placeholder="Correo" value="@Model.Correo" />
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label for="Telefono">Teléfono</label>
+                    <span asp-validation-for="Telefono" class="text-danger"></span>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fa fa-phone"></i></span>
+                        <input asp-for="Telefono" class="form-control" placeholder="Número" value="@Model.Telefono" />
+                    </div>
+                </div>
+                <div class="d-grid">
+                    <button type="submit" class="btn btn-success">Actualizar Perfil</button>
+                </div>
+            </form>
+
+            <div class="mt-4">
+                <h3 class="text-center">Cambiar Contraseña</h3>
+                <!-- Formulario para cambiar contraseña -->
+                <form asp-action="CambiarContrasena" method="post">
+                    <div class="mb-3">
+                        <label for="ContrasenaActual">Contraseña Actual</label>
+                        <span asp-validation-for="Password" class="text-danger"></span>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fa fa-lock"></i></span>
+                            <input type="password" name="ContrasenaActual" class="form-control" placeholder="Contraseña Actual" />
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="ContrasenaNueva">Nueva Contraseña</label>
+                        <span asp-validation-for="Password" class="text-danger"></span>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fa fa-lock"></i></span>
+                            <input type="password" name="ContrasenaNueva" class="form-control" placeholder="Nueva Contraseña" />
+                        </div>
+                    </div>
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-success">Cambiar Contraseña</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

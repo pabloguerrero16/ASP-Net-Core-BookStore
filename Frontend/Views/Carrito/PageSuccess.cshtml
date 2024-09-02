@@ -1,0 +1,51 @@
+﻿@using System.Text
+@using Newtonsoft.Json
+@{
+    ViewData["Title"] = "PageSuccess";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var userBytes = ViewContext.HttpContext.Session.Get("User");
+    Usuario user = null;
+    if (userBytes != null)
+    {
+        var userJson = Encoding.UTF8.GetString(userBytes);
+        user = JsonConvert.DeserializeObject<Usuario>(userJson);
+    }
+}
+
+<div class="container">
+    @{
+        if ((bool)ViewData["Status"])
+        {
+            <div class="row justify-content-center">
+                <div class="col-md-5">
+                    <div class="message-box _success">
+                        <i class="fa fa-check-circle" aria-hidden="true"></i>
+                        <h2> Tu pago ha sido exitoso </h2>
+                        <p>
+                            ¡Gracias por comprar con nosotros!
+                        </p>
+                        <form method="post" asp-action="PagarCarrito" asp-controller="Carrito">
+                            <input type="hidden" name="UsuarioId" value="@user.Id" />
+                            <button type="submit" class="btn btn-lg btn-primary mt-2">Continuar</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        } else
+        {
+            <div class="row justify-content-center">
+                <div class="col-md-5">
+                    <div class="message-box _success _failed">
+                        <i class="fa fa-times-circle" aria-hidden="true"></i>
+                        <h2> Tu pago ha fallado </h2>
+                        <p>  Intenta Más Tarde </p>
+                        <a class="btn btn-lg btn-primary mt-2" asp-action="Index" asp-controller="Home">Continuar</a>
+
+                    </div>
+                </div>
+            </div>
+        }
+    }
+    
+    <hr>
+</div>

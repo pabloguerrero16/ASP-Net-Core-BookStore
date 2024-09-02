@@ -1,0 +1,28 @@
+﻿@model Frontend.Models.Genero
+
+<div id="editGeneroModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="editGeneroModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editGeneroModalLabel">Editar Genero</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="editGeneroForm">
+                    <input type="hidden" id="editGeneroId" name="Id" value="@Model.Id" />
+                    <div class="form-group">
+                        <label for="editGeneroName">Nombre</label>
+                        <input type="text" class="form-control" id="editGeneroName" name="Nombre" value="@Model.Nombre" required />
+                        <span asp-validation-for="Nombre" class="text-danger"></span>
+                    </div>
+                    <div class="form-group mt-3">
+                        <button type="submit" class="btn btn-success">Guardar</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,96 @@
+﻿@using Newtonsoft.Json
+@using System.Text
+
+@{
+    ViewData["Title"] = "DetalleFactura";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var userBytes = ViewContext.HttpContext.Session.Get("User");
+    Usuario user = null;
+    if (userBytes != null)
+    {
+        var userJson = Encoding.UTF8.GetString(userBytes);
+        user = JsonConvert.DeserializeObject<Usuario>(userJson);
+    }
+}
+
+@model List<Frontend.Models.DetalleViewModel>
+
+<section class="py-3 py-md-5">
+    <div class="mt-3">
+        <a href="@Url.Action("MisCompras", "Usuario")" class="btn btn-secondary btn-lg">Volver</a>
+    </div>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-12 col-lg-9 col-xl-8 col-xxl-7">
+                <div class="row gy-3 mb-3">
+                    <div class="col-6">
+                        <h2 class="text-uppercase text-endx m-0">Factura</h2>
+                    </div>
+                    <div class="col-12">
+                        <h4>De</h4>
+                        <address>
+                            <strong>Antigua Libreria</strong><br>
+                            Cartago, Central Cartago<br>
+                            Cartago<br>
+                            Telefono: (506) 2424-6758<br>
+                            Correo: antigua@libreria.com
+                        </address>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-12 col-sm-6 col-md-8">
+                        <h4>Facturado A</h4>
+                        <address>
+                            <strong>@user.Nombre @user.Apellido</strong><br>
+                            Phone: @user.Telefono<br>
+                            Email: @user.Correo
+                        </address>
+                    </div>
+                    
+                </div>
+                <div class="row mb-3">
+                    <div class="col-12">
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th scope="col" class="text-uppercase">Cant</th>
+                                        <th scope="col" class="text-uppercase">Producto</th>
+                                        <th scope="col" class="text-uppercase text-end">Precio Unitario</th>
+                                        <th scope="col" class="text-uppercase text-end">Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="table-group-divider">
+                                    @foreach (var detalle in Model)
+                                    {
+                                        <tr>
+                                            <th scope="row">@detalle.CantidadCompra</th>
+                                            <td>@detalle.Nombre</td>
+                                            <td class="text-end">₡@detalle.PrecioCompra.ToString("N2")</td>
+                                            <td class="text-end">₡@((detalle.PrecioCompra * 2).ToString("N2"))</td>
+                                        </tr>
+                                    }
+
+                                    <tr>
+
+                                        <td colspan="3" class="text-end">Subtotal</td>
+                                        <td class="text-end">₡@Model.Sum(d => d.SubTotal).ToString("N2")</td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="3" class="text-end">IVA</td>
+                                        <td class="text-end">₡@Model.Sum(d => d.ImpuestoTotal).ToString("N2")</td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row" colspan="3" class="text-uppercase text-end">Total</th>
+                                        <td class="text-end">₡@Model.Sum(d => d.Total).ToString("N2")</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+

@@ -1,0 +1,30 @@
+﻿@model Frontend.Models.LoginModel
+
+<div class="container">
+    <div class="row mt-5">
+        <div class="col-lg-4 bg-white m-auto">
+            <h2 class="text-center pt-3">Iniciar Sesión</h2>
+            <p class="text-center text-muted lead">Ingresa con tu Cuenta</p>
+            <form asp-action="Login" method="post">
+                
+                <span asp-validation-for="Correo" class="text-danger"></span>
+                <div class="input-group mb-3">
+                    <span class="input-group-text"><i class="fa fa-envelope"></i></span>
+                    <input asp-for="Correo" class="form-control" placeholder="Correo" />
+                </div>
+                
+                <span asp-validation-for="Password" class="text-danger"></span>
+                <div class="input-group mb-3">
+                    <span class="input-group-text"><i class="fa fa-lock"></i></span>
+                    <input asp-for="Password" type="password" class="form-control" placeholder="Contraseña" />
+                </div>
+                <div class="d-grid">
+                    <button type="submit" class="btn btn-success">Iniciar Sesión</button>
+                    <p class="text-center mt-2">
+                        ¿No tienes una cuenta? <a href="/Usuario/registrarUsuario">Registrate Aquí!</a>
+                    </p>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

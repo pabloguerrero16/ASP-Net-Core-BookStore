@@ -1,0 +1,145 @@
+﻿@model List<CarritoViewModel>
+
+@{
+    ViewData["Title"] = "Carrito";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var emptyCartMessage = ViewData["EmptyCartMessage"] as string;
+}
+
+@if (!string.IsNullOrEmpty(emptyCartMessage))
+{
+    <div class="alert alert-info text-center my-5" role="alert">
+        <h4>@emptyCartMessage</h4>
+        <a href="@Url.Action("Index", "Home")" class="btn btn-success mt-3">Seguir Comprando</a>
+    </div>
+}
+else
+{
+    <div class="jumbotron">
+        <div class="container px-3 my-5 clearfix">
+            <!-- Shopping cart table -->
+            <div class="card-carrito">
+                <div class="card-header">
+                    <h2>Mi Carrito</h2>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered m-0">
+                            <thead>
+                                <tr>
+                                    <th class="text-center py-3 px-4" style="min-width: 400px;">Producto &amp; Detalles</th>
+                                    <th class="text-right py-3 px-4" style="width: 100px;">Precio</th>
+                                    <th class="text-center py-3 px-4" style="width: 120px;">Cantidad</th>
+                                    <th class="text-right py-3 px-4" style="width: 100px;">Total</th>
+                                    <th class="text-center align-middle py-3 px-0" style="width: 40px;">
+                                        <a href="#" class="shop-tooltip float-none text-light" title="" data-original-title="Clear cart">
+                                            <i class="ino ion-md-trash"></i>
+                                        </a>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <td class="p-4">
+                                            <div class="d-flex align-items-center">
+                                                <img src="@item.ImageUrl" class="d-block ui-w-40 ui-bordered mr-4" alt="">
+                                                <div class="mx-2">
+                                                    <a href="#" class="d-block text-dark">@item.Nombre</a>
+                                                    <small>
+                                                        <span class="text-muted">Formato: @item.Formato</span>
+                                                    </small>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="text-right font-weight-semibold align-middle p-4">₡@item.Precio.ToString("N2")</td>
+                                        <td class="text-right font-weight-semibold align-middle p-4">@item.Cantidad</td>
+                                        <td class="text-right font-weight-semibold align-middle p-4">₡@item.SubTotal.ToString("N2")</td>
+                                        <td class="text-center align-middle px-0">
+                                            <a style="cursor:pointer" class="shop-tooltip close float-none text-danger" title="" data-original-title="Remove" onclick="showConfirmDeleteModal(@item.CarritoId)"><i class="fas fa-trash"></i></a>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- / Shopping cart table -->
+
+                    <div class="d-flex justify-content-end align-items-center pb-4">
+                        <div class="text-right">
+                            <div class="mt-4">
+                                <label class="text-muted font-weight-normal m-0">Precio Total (IVA)</label>
+                                <div class="text-large">
+                                    <strong>₡@(Model.Sum(x => x.Total).ToString("N2"))</strong>
+                                    <input type="hidden" value="@(Model.Sum(x => x.Total).ToString("F2"))" id="precio" />
+                                </div>
+                            </div>
+                            <div class="mt-3">
+                                <button type="button" class="btn btn-lg btn-default md-btn-flat mt-2 mr-3">Seguir Comprando</button>
+                                <button type="button" class="btn btn-lg btn-primary mt-2" onclick="pagar()">Pagar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+
+
+
+@Html.Partial("_ConfirmDeletePartial")
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    function showConfirmDeleteModal(carritoId) {
+        $('#confirmDeleteModal').modal('show');
+        document.getElementById('confirmDeleteMessage').innerText = '¿Deseas eliminar este ítem del carrito?';
+
+        document.getElementById('confirmDeleteButton').onclick = function () {
+            window.location.href = `/Carrito/EliminarProductoCarrito?carritoId=${carritoId}`;
+        };
+    }
+
+    function pagar() {
+        var precio = $("#precio").val();
+        var body = {
+            precio: precio
+        };
+
+        jQuery.ajax({
+            url: '@Url.Action("Paypal", "Carrito")',
+            type: "POST",
+            data: JSON.stringify(body),
+            dataType: "json",
+            contentType: "application/json; charset=utf-8",
+            success: function (data) {
+                console.log("Response: ", data);
+                $("div.jumbotron").LoadingOverlay("hide");
+                if (data.status) {
+                    var jsonresult = JSON.parse(data.respuesta);
+                    var links = jsonresult.links;
+                    var resultado = links.find(item => item.rel === "approve")
+                    window.location.href = resultado.href
+                    console.log(links);
+                    console.log(resultado);
+                } else {
+                    alert("Error creando solicitud del pago, intenta más tarde")
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error("Error: ", {
+                    status: status,
+                    error: error,
+                    responseText: xhr.responseText
+                }); // Agrega más detalles para depurar
+            },
+            beforeSend: function () {
+                $("div.jumbotron").LoadingOverlay("show");
+            }
+        });
+    }
+
+</script>
+

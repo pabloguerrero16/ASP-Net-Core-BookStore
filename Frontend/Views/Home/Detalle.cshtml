@@ -1,0 +1,108 @@
+﻿@using System.Text
+@using Newtonsoft.Json
+@model Frontend.Models.Libro
+@{
+    ViewData["Title"] = @Model.Nombre;
+        var userBytes = ViewContext.HttpContext.Session.Get("User");
+        Usuario user = null;
+        if (userBytes != null)
+        {
+            var userJson = Encoding.UTF8.GetString(userBytes);
+            user = JsonConvert.DeserializeObject<Usuario>(userJson);
+        }
+}
+
+
+<div class="container pb-5">
+    <div class="row">
+        <div class="col-lg-5 mt-5">
+            <div class="card-detail mb-3">
+                <img class="card-img-detail img-fluid" src="@Model.RutaFoto" alt="@Model.Nombre" id="product-detail">
+            </div>
+        </div>
+        <!-- col end -->
+        <div class="col-lg-7 mt-5">
+            <div class="card">
+                <div class="card-body">
+                    <h1 class="h2">@Model.Nombre</h1>
+                    <p class="h3 py-2">₡@Model.Precio</p>
+                    <ul class="list-inline">
+                        <li class="list-inline-item">
+                            <h6>Autor</h6>
+                        </li>
+                        <li class="list-inline-item">
+                            <p class="text-muted"><strong>@Model.Autor?.Nombre</strong></p>
+                        </li>
+                    </ul>
+
+                    <h6>Descricion:</h6>
+                    <p>@Model.Descripcion</p>
+                    <ul class="list-inline">
+                        <li class="list-inline-item">
+                            <h6>Formato: </h6>
+                        </li>
+                        <li class="list-inline-item">
+                            <p class="text-muted"><strong>@Model.Formato?.Nombre</strong></p>
+                        </li>
+                    </ul>
+                    <ul class="list-inline">
+                        <li class="list-inline-item">
+                            <h6>Stock: </h6>
+                        </li>
+                        <li class="list-inline-item">
+                            <p class="text-muted"><strong>@Model.Stock</strong></p>
+                        </li>
+                    </ul>
+
+                    <h6>Genero:</h6>
+                    <ul class="list-unstyled pb-3">
+                        <li>@Model.Genero?.Nombre</li>
+                    </ul>
+                    <div class="row">
+                        <div class="col-auto">
+                            <ul class="list-inline pb-3">
+                                <li class="list-inline-item text-right">
+                                    Cantidad
+                                    <input type="hidden" name="product-quantity" id="product-quantity" value="1" data-stock="@Model.Stock">
+                                </li>
+                                <li class="list-inline-item">
+                                    <span class="btn btn-success" id="decrement-button">-</span>
+                                </li>
+                                <li class="list-inline-item">
+                                    <span class="badge bg-secondary" id="quantity-display">1</span>
+                                </li>
+                                <li class="list-inline-item">
+                                    <span class="btn btn-success" id="increment-button">+</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+
+
+                    <form asp-action="registrarCarrito" asp-controller="Carrito" method="POST">
+                        <input type="hidden" id="product-id" name="ProductoId" value="@Model.Id">
+                        <input type="hidden" id="quantity" name="Cantidad" value="1">
+                        <input type="hidden" id="date" name="FechaCarrito" value="@DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ")">
+                        <div class="row">
+                        </div>
+                        <div class="row pb-3">
+                            <div class="col d-grid">
+                                @if (user != null)
+                                {
+                                    <button type="submit" class="btn btn-success btn-lg" name="submit" value="addtocart">Agregar al Carrito</button>
+                                }
+                                else
+                                {
+                                    <a href="@Url.Action("Login", "Usuario")" class="btn btn-primary btn-lg">Iniciar Sesión</a>
+                                }
+                            </div>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

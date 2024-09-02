@@ -1,0 +1,39 @@
+﻿
+@{
+    ViewData["Title"] = "MisCompras";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+}
+
+@model List<Frontend.Models.Maestro>
+
+<div class="container py-5">
+    <div class="row py-5">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Fecha de Compra</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var maestro in Model)
+                {
+                    <tr>
+                        <td>@maestro.FechaCompra</td>
+                        <td>@maestro.TotalFactura</td>
+                        <td>
+                            <div class="d-flex">
+                                <a asp-action="DetalleFactura" asp-controller="Usuario" asp-route-maestroId="@maestro.MaestroId" class="btn btn-info btn-sm">Ver Detalle</a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <div class="mt-3">
+            <a href="@Url.Action("Index", "Home")" class="btn btn-secondary btn-lg">Volver</a>
+        </div>
+    </div>
+</div>
+

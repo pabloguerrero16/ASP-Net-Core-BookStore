@@ -1,0 +1,108 @@
+﻿@model Frontend.Models.LibroViewModel
+
+@{
+    ViewData["Title"] = "Inicio";
+}
+
+<div class="container py-5">
+    <div class="row">
+        <div class="col-lg-3">
+            <h1 class="h2 pb-4">Filtros | <a class="h2 pb-4 text-decoration-none" asp-action="Index" asp-controller="Home" style="color: inherit;">Quitar Filtros</a></h1>
+            <hr></hr>
+            <ul class="list-unstyled templatemo-accordion">
+                <li class="pb-3">
+                    <a class="collapsed d-flex justify-content-between h3 text-decoration-none">
+                        Formato
+                        <i class="fa fa-fw fa-chevron-circle-down mt-1"></i>
+                    </a>
+                    <ul class="collapse show list-unstyled pl-3">
+                        @foreach (var formato in Model.Formatos)
+                        {
+                            <li><a class="text-decoration-none" href="@Url.Action("Index", "Home", new { formatoId = formato.Id })">@formato.Nombre</a></li>
+                        }
+                    </ul>
+                    <hr></hr>
+                </li>
+                <li class="pb-3">
+                    <a class="collapsed d-flex justify-content-between h3 text-decoration-none">
+                        Género
+                        <i class="pull-right fa fa-fw fa-chevron-circle-down mt-1"></i>
+                    </a>
+                    <ul class="collapse show list-unstyled pl-3">
+                        @foreach (var genero in Model.Generos)
+                        {
+                            <li><a class="text-decoration-none" href="@Url.Action("Index", "Home", new { generoId = genero.Id })">@genero.Nombre</a></li>
+                        }
+                    </ul>
+                    <hr></hr>
+                </li>
+                <li class="pb-3">
+                    <a class="collapsed d-flex justify-content-between h3 text-decoration-none">
+                        Autor
+                        <i class="pull-right fa fa-fw fa-chevron-circle-down mt-1"></i>
+                    </a>
+                    <ul class="collapse show list-unstyled pl-3">
+                        @foreach (var autor in Model.Autores)
+                        {
+                            <li><a class="text-decoration-none" href="@Url.Action("Index", "Home", new { autorId = autor.Id })">@autor.Nombre</a></li>
+                        }
+                    </ul>
+                </li>
+            </ul>
+        </div>
+
+        <div class="col-lg-9">
+            <div class="row">
+                <div class="col-md-6">
+                    <form asp-action="Index" method="get" class="d-flex">
+                        <input type="text" name="searchQuery" class="form-control" placeholder="Buscar libros...">
+                        <button type="submit" class="btn btn-success ms-2">Buscar</button>
+                    </form>
+                </div>
+                <div class="col-md-6 pb-4">
+                    <div class="d-flex">
+                    </div>
+                </div>
+            </div>
+
+            @if (Model.NoResultsMessage != null)
+            {
+                <div class="alert alert-warning mt-5" role="alert">
+                    @Model.NoResultsMessage
+                </div>
+            }
+            @* TARJETAS *@
+            <div class="row">
+                @foreach (var libro in Model.Libros)
+                {
+                    <div class="col-md-4 mt-5">
+                        <div class="card mb-4 product-wap rounded-0">
+                            <div class="card rounded-0">
+                                <img class="card-img rounded-0 img-fluid" src="@libro.RutaFoto" alt="@libro.Nombre">
+                                <div class="card-img-overlay rounded-0 product-overlay d-flex align-items-center justify-content-center">
+                                    <ul class="list-unstyled">
+                                        <li>
+                                            <a class="btn btn-success text-white mt-2" href="@Url.Action("Detalle", "Home", new { id = libro.Id })">
+                                                <i class="far fa-eye"></i>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <a href="@Url.Action("Detalle", "Home", new { id = libro.Id })" class="h3 text-decoration-none">@libro.Nombre</a>
+
+                                <ul class="w-100 list-unstyled d-flex justify-content-between mb-0">
+                                    <li>@libro.Autor?.Nombre</li>
+                                </ul>
+
+                                <!-- Precio del libro -->
+                                <p class="text-center mb-0">₡@libro.Precio</p>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
